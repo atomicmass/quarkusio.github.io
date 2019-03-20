@@ -76,10 +76,10 @@ Then add the relevant configuration properties in `{config-file}`.
 [source,properties]
 --
 # configure your datasource
-quarkus.datasource.url: jdbc:postgresql://localhost:5432/mydatabase
-quarkus.datasource.driver: org.postgresql.Driver
-quarkus.datasource.username: sarah
-quarkus.datasource.password: connor
+quarkus.datasource.url=jdbc:postgresql://localhost:5432/mydatabase
+quarkus.datasource.driver=org.postgresql.Driver
+quarkus.datasource.username=sarah
+quarkus.datasource.password=connor
 
 # drop and create the database at startup (use `update` to only update the schema)
 quarkus.hibernate-orm.database.generation=drop-and-create
@@ -133,44 +133,48 @@ Once you have written your entity, here are the most common operations you will 
 
 [source,java]
 --
-// creating a person
-Person person = new Person();
-person.name = "Stef";
-person.birth = LocalDate.of(1910, Month.FEBRUARY, 1);
-person.status = Status.Alive;
+@Transactional
+public void testPersistence() {
 
-// persist it
-person.persist();
+  // creating a person
+  Person person = new Person();
+  person.name = "Stef";
+  person.birth = LocalDate.of(1910, Month.FEBRUARY, 1);
+  person.status = Status.Alive;
 
-// note that once persisted, you don't need to explicitly save your entity: all
-// modifications are automatically persisted on transaction commit.
+  // persist it
+  person.persist();
 
-// check if it's persistent
-if(person.isPersistent()){
-  // delete it
-  person.delete();
-} 
+  // note that once persisted, you don't need to explicitly save your entity: all
+  // modifications are automatically persisted on transaction commit.
 
-// getting a list of all Person entities
-List<Person> allPersons = Person.listAll();
+  // check if it's persistent
+  if(person.isPersistent()){
+    // delete it
+    person.delete();
+  } 
 
-// finding a specific person by ID
-person = Person.findById(personId);
+  // getting a list of all Person entities
+  List<Person> allPersons = Person.listAll();
 
-// finding all living persons
-List<Person> livingPersons = Person.list("status", Status.Alive);
+  // finding a specific person by ID
+  person = Person.findById(personId);
 
-// counting all persons
-int countAll = Person.count();
+  // finding all living persons
+  List<Person> livingPersons = Person.list("status", Status.Alive);
 
-// counting all living persons
-int countAlive = Person.count("status", Status.Alive);
+  // counting all persons
+  int countAll = Person.count();
 
-// delete all living persons
-Person.delete("status", Status.Alive);
+  // counting all living persons
+  int countAlive = Person.count("status", Status.Alive);
 
-// delete all persons
-Person.deleteAll();
+  // delete all living persons
+  Person.delete("status", Status.Alive);
+
+  // delete all persons
+  Person.deleteAll();
+}
 --
 
 All `list` methods have equivalent `stream` versions.
